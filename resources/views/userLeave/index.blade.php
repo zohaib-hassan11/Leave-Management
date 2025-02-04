@@ -82,7 +82,7 @@
                                 <form action="{{ route('leave.updateStatus', $leave->id) }}" method="POST">
                                     @csrf
                                     @method('POST')
-                                    <select name="status" class="form-control-sm">
+                                    <select name="status" class="form-control-sm" onchange="this.form.submit()">
                                         <option value="pending" {{ $leave->status == 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="approved" {{ $leave->status == 'approved' ? 'selected' : '' }}>Approved</option>
                                         <option value="rejected" {{ $leave->status == 'rejected' ? 'selected' : '' }}>Rejected</option>

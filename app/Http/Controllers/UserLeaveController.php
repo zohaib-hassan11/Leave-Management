@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\LeaveType;
 use Illuminate\Http\Request;
+use App\Mail\LeaveStatusUpdated;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\UserLeaveRequest;
 use App\Repositories\UserRepositoryInterface;
@@ -99,18 +100,17 @@ class UserLeaveController extends Controller
             return redirect()->back()->with('errors', 'User Leave Not Found');
     }
 
-    public function updateStatus(UserLeaveRequest $request, $id){
-
+    public function updateStatus(Request $request, $id)
+    {
         $leave = $this->userLeaveRepository->loadRelations(['user', 'leaveType'])->find($id);
         if (!$leave) {
             return back()->with('errors', 'Leave request not found.');
         }
 
-        $validated = $request->validated();
-        $leave->status = $validated['status'];
+        $leave->status = $request->status;
         $leave->save();
 
-        // Mail::to($user->email)->send(new LeaveStatusUpdated($leave));
+        Mail::to($leave->user->email)->send(new LeaveStatusUpdated($leave));
 
         return back()->with('success', 'Leave status updated and email sent.');
     }
