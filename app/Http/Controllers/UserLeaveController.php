@@ -56,8 +56,14 @@ class UserLeaveController extends Controller
      */
     public function create()
     {
-        $user = User::all();
         $type = LeaveType::all();
+        $authUser = auth()->user();
+
+        if ($authUser->hasRole('employee')) {
+            $user = User::where('id', $authUser->id)->get();
+        } else {
+            $user = User::all();
+        }
 
         return view('userLeave.create', compact('user', 'type'));
     }
@@ -152,6 +158,7 @@ class UserLeaveController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $leave = $this->userLeaveRepository->loadRelations(['user', 'leaveType'])->find($id);
+        $userId = auth()->id();
 
         if (!$leave) {
             return back()->with('errors', 'Leave request not found.');
@@ -161,6 +168,19 @@ class UserLeaveController extends Controller
 
         $leave->status = $request->status;
         $leave->save();
+
+        $userRequest = UserRequest::where('id', $leave->id)->first();
+        if ($userRequest) {
+            $userRequest->approved_by = $userId;
+            $userRequest->status = $leave->status;
+            $userRequest->save();
+        } else {
+            UserRequest::create([
+                'approved_by' => $userId,
+                'leave_id' => $leave->id,
+                'status' => $leave->status,
+            ]);
+        }
 
         $startDate = Carbon::parse($leave->start_date);
         $endDate = Carbon::parse($leave->end_date);
@@ -186,9 +206,9 @@ class UserLeaveController extends Controller
 
         $leaveBalance->save();
 
-        // Optionally send an email notification
         Mail::to($leave->user->email)->send(new LeaveStatusUpdated($leave));
 
         return back()->with('success', 'Leave status updated and email sent.');
     }
+
 }

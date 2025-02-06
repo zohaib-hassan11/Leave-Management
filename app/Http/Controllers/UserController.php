@@ -25,11 +25,22 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $selectedRole = $request->input('role');
 
-        $users = $this->userRepository->getAll($search);
+        $roles = $this->roleRepository->getAllRoles();
 
-        return view('users.index', compact('users'));
+        if (!empty($search) || !empty($selectedRole)) {
+            $users = $this->userRepository->getFilteredUsers([
+                'search' => $search,
+                'roles' => $selectedRole
+            ]);
+        } else {
+            $users = $this->userRepository->getAll();
+        }
+
+        return view('users.index', compact('users', 'roles'));
     }
+
 
     /**
      * Show the form for creating a new resource.
