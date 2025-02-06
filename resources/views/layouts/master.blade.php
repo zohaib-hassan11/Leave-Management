@@ -12,7 +12,6 @@
 		<!-- Theme style -->
 		<link rel="stylesheet" href="{{ asset('assets/css/adminlte.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
-
 		@stack('styles') <!-- Ensure styles pushed in views appear here -->
 	</head>
 	<body class="hold-transition sidebar-mini">

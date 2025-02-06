@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Repositories\RoleRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 
 class UserController extends Controller
 {
     protected $userRepository;
+    protected $roleRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository , RoleRepositoryInterface $roleRepository)
     {
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
@@ -43,12 +46,16 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $user = $this->userRepository->create($request->validated());
-        return redirect()->back()->with('success', 'User Create successfully');
+        $this->roleRepository->assignRoleToUser($user->id, $request->role);
+
+        return redirect()->back()->with('success', 'User created successfully');
     }
+
 
     /**
      * Display the specified resource.
      */
+
     public function show(string $id)
     {
         //
@@ -72,11 +79,17 @@ class UserController extends Controller
     public function update(UserRequest $request, string $id)
     {
         $user = $this->userRepository->update($id, $request->validated());
-        if($user){
-            return redirect()->back()->with('success', 'User Save Successfully.');
+
+        if ($user) {
+            $this->roleRepository->syncRolesForUser($user->id, $request->role);
+
+            return redirect()->back()->with('success', 'User updated successfully.');
         }
-        return redirect()->back()->with('errors', 'Faild to Update User.');
+
+        return redirect()->back()->with('errors', 'Failed to update user.');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
