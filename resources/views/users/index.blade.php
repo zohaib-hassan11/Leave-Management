@@ -27,21 +27,43 @@
     <!-- Default box -->
     <div class="container-fluid">
         <div class="card">
-            <div class="card-header">
-                <div class="card-tools">
-                    <form method="GET" action="{{ route('user.index') }}">
-                        <div class="input-group" style="width: 250px;">
-                            <input type="text" name="search" class="form-control float-right" placeholder="Search" value="{{ request('search') }}">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <!-- Left Side: Clear Button & Role Dropdown -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <!-- Clear Button -->
+                            <a href="{{ route('user.index') }}" class="btn btn-outline-secondary mr-2">
+                                <i class=""></i> Clear
+                            </a>
+
+                            <!-- Role Dropdown -->
+                            <select name="role" id="roleFilter" class="form-control w-auto">
+                                <option value="">All Roles</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                    </form>
+
+                        <!-- Right Side: Search Bar -->
+                        <div class="col-md-6 d-flex justify-content-end">
+                            <form method="GET" action="{{ route('user.index') }}">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
             <div class="card-body table-responsive p-0">
+                @if ($users->count() > 0)
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
@@ -90,27 +112,12 @@
 
                     </tbody>
                 </table>
+                @else
+                    <p class="text-center text-muted mt-4">No records found matching the applied filters.</p>
+                @endif
             </div>
-            <div class="card-footer clearfix">
-                <ul class="pagination pagination m-0 float-right">
-                    @if ($users->onFirstPage())
-                        <li class="page-item disabled"><span class="page-link">«</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $users->previousPageUrl() }}">«</a></li>
-                    @endif
-
-                    @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
-                        <li class="page-item {{ $page == $users->currentPage() ? 'active' : '' }}">
-                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                        </li>
-                    @endforeach
-
-                    @if ($users->hasMorePages())
-                        <li class="page-item"><a class="page-link" href="{{ $users->nextPageUrl() }}">»</a></li>
-                    @else
-                        <li class="page-item disabled"><span class="page-link">»</span></li>
-                    @endif
-                </ul>
+            <div class="d-flex justify-content-end mt-3 mr-2">
+                {!! $users->links('pagination::bootstrap-5') !!}
             </div>
 
         </div>
@@ -119,6 +126,20 @@
 </section>
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#roleFilter").on("change", function () {
+            var selectedRole = $(this).val();
+            var searchQuery = $("input[name='search']").val();
+
+            var url = "{{ route('user.index') }}";
+
+            window.location.href = url + "?search=" + encodeURIComponent(searchQuery) + "&role=" + encodeURIComponent(selectedRole);
+        });
+    });
+</script>
+
 
 @endpush
 

@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class LeaveBalance extends Model
 {
     protected $table = 'leave_balance';
+    protected $fillable = ['user_id', 'leave_type_id', 'remaining_days'];
 
-    public function users(){
+    public function user(){
         return $this->belongsTo(User::class);
     }
 

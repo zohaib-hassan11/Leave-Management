@@ -11,38 +11,54 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                     with font-awesome or any other icon font library -->
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+               @can('dashboard')
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('user_view')
                 <li class="nav-item">
                     <a href="{{ route('user.index') }}" class="nav-link">
                         <i class="nav-icon  fas fa-users"></i>
                         <p>Users</p>
                     </a>
                 </li>
+                @endcan
+
+                @can('roles_and_permission')
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="rolesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg class="h-6 nav-icon w-6 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 4v12l-4-2-4 2V4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p>Roles and Permission</p>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="rolesDropdown">
+                            <a class="dropdown-item bg-secondary" href="{{ route('roles.index') }}">Manage Roles</a>
+                            <a class="dropdown-item bg-secondary" href="{{ route('permissions.index') }}">Manage Permissions</a>
+                            <a class="dropdown-item bg-secondary" href="{{ route('role-permission.index')  }}">Assign Roles & Permissions</a>
+                        </div>
+                    </li>
+                @endcan
+
                 <li class="nav-item">
                     <a href="{{ route('leave.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p>User Leave</p>
                     </a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a href="subcategory.html" class="nav-link">
-                        <i class="nav-icon fas fa-file-alt"></i>
-                        <p>Sub Category</p>
-                    </a>
-                </li>
                 <li class="nav-item">
-                    <a href="brands.html" class="nav-link">
-                        <svg class="h-6 nav-icon w-6 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 4v12l-4-2-4 2V4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                          </svg>
-                        <p>Brands</p>
+                    <a href="{{ route('leave-balance.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>Leave Balance</p>
                     </a>
                 </li>
+                {{--
+
                 <li class="nav-item">
                     <a href="products.html" class="nav-link">
                         <i class="nav-icon fas fa-tag"></i>

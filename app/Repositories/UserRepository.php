@@ -12,6 +12,25 @@ class UserRepository extends BaseCrudRepository implements UserRepositoryInterfa
     {
         parent::__construct($model);
     }
+
+    public function getFilteredUsers(array $filters = [])
+    {
+        $query = User::with(['leaveRequest', 'leaveBalance']);
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['search'] . '%')
+                ->orWhere('email', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        if (!empty($filters['roles'])) {
+            $query->where('role', $filters['roles']);
+        }
+
+        return $query->paginate(10);
+    }
+
 }
 
 ?>
