@@ -23,25 +23,36 @@ Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logou
 
 //AuthMiddleware
 
-// AuthMiddleware
 Route::middleware(['auth'])->group(function () {
 
     // DashboardController
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    //UserController
+
     Route::resource('user', UserController::class);
+
+    //UserLeaveController
 
     Route::resource('leave', UserLeaveController::class);
     Route::post('/leave/update-status/{id}', [UserLeaveController::class, 'updateStatus'])->name('leave.updateStatus');
 
+    //Leave Controller
+
     Route::resource('leave-balance', LeaveBalanceController::class);
 
-    Route::resource('roles', RoleController::class);
-    Route::resource('permissions', PermissionController::class);
-    Route::post('assign-permission', [PermissionController::class, 'assignPermissionsToRole'])->name('assignPermissionsToRole');
-    // Route::get('role-permission', [RolePermissionController::class, 'index'])->name('role.permission.index');
-    Route::resource('role-permission', RolePermissionController::class);
-    Route::get('role-has-permission', [RolePermissionController::class, 'showAssignForm'])->name('assign.form');
+    //Role And Permissions
+
+    Route::middleware(['can:roles_and_permission'])->group(function () {
+        Route::resource('roles', RoleController::class);
+        Route::resource('permissions', PermissionController::class);
+        Route::post('assign-permission', [PermissionController::class, 'assignPermissionsToRole'])
+            ->name('assignPermissionsToRole');
+        Route::resource('role-permission', RolePermissionController::class);
+        Route::get('role-has-permission', [RolePermissionController::class, 'showAssignForm'])
+            ->name('assign.form');
+    });
 
 });
 
