@@ -44,9 +44,15 @@ class AuthenticationController extends Controller
         return redirect()->back()->with('errors', 'Invalid credentials.');
     }
 
-    public function logout(){
+    public function logout(Request $request)
+    {
         $this->authRepository->logout();
 
-        return redirect()->route('auth.login')->with('Logged out successfully.');
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()->route('auth.login')->with('success', 'Logged out successfully.');
     }
+
 }

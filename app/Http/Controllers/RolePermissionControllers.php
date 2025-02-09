@@ -21,7 +21,7 @@ class RolePermissionController extends Controller
 
     public function index(){
         $roles = $this->rolePermissionInterface->getAllRolesWithPermissions();
-        dd($roles);
+        // dd($roles);
         return view('RoleAndPermission.RoleHasPermission.index',compact('roles'));
     }
 
