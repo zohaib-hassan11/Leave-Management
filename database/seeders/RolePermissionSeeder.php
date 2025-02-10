@@ -62,7 +62,7 @@ class RolePermissionSeeder extends Seeder
             }
 
             // Assign limited permissions to a regular user
-            if ($roleName === 'user') {
+            if ($roleName === 'employee') {
                 $role->syncPermissions([
                     'user_request_view',
                     'dashboard',
@@ -98,7 +98,7 @@ class RolePermissionSeeder extends Seeder
                 'role' => 'employee'
             ]
         );
-        $normalUser->assignRole('user');
+        $normalUser->assignRole('employee');
 
         echo "Roles and permissions seeded successfully! 🚀\n";
     }
