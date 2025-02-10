@@ -9,6 +9,7 @@ use Database\Seeders\UserSeeder;
 use Database\Seeders\LeaveTypeSeeder;
 use Database\Seeders\UserRequestSeeder;
 use Database\Seeders\LeaveBalanceSeeder;
+use Database\Seeders\RolePermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,5 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LeaveTypeSeeder::class);
         $this->call(UserRequestSeeder::class);
         $this->call(LeaveBalanceSeeder::class);
+        $this->call(RolePermissionSeeder::class);
     }
 }
