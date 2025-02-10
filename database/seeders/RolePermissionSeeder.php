@@ -23,7 +23,7 @@ class RolePermissionSeeder extends Seeder
         // DB::table('permissions')->truncate();
 
         // Define roles
-        $roles = ['admin', 'manager', 'user'];
+        $roles = ['admin', 'manager', 'employee'];
 
         // Define permissions from your database
         $permissions = [
